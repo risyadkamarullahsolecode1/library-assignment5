@@ -16,7 +16,7 @@ import BorrowForm from './components/molecules/BorrowForm';
 import ReturnForm from './components/molecules/ReturnForm';
 import ReturnPage from './components/pages/ReturnPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  // Import React Query
-
+import BookSearch from './components/pages/BookSearch';
 const queryClient = new QueryClient();
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/books" element={<BooksPage />} />
         <Route path="/books/add" element={<AddBookPage />} />
+        <Route path="/books/search" element={<BookSearch />} />
         <Route path="/books/:id" element={<BookDetailPage />} />
         <Route path="/books/edit/:id" element={<EditBookPage />} />
         <Route path="/members" element={<MemberPage />} />

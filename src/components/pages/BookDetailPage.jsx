@@ -31,29 +31,29 @@ const BookDetailPage = () => {
     <div>
       {book ? (
         <Card>
-          <Card.Header as="h5">Member Details</Card.Header>
+          <Card.Header as="h5">Book Details</Card.Header>
           <Card.Body>
             <Card.Title>{book.title}</Card.Title>
             <Card.Text>
-              <strong>Title :</strong> {member.title}
+              <strong>Title :</strong> {book.author}
             </Card.Text>
             <Card.Text>
-              <strong>Category :</strong> {member.category}
+              <strong>Category :</strong> {book.category}
             </Card.Text>
             <Card.Text>
-              <strong>ISBN :</strong> {member.isbn}
+              <strong>ISBN :</strong> {book.isbn}
             </Card.Text>
             <Card.Text>
-              <strong>Publisher :</strong> {member.publisher}
+              <strong>Publisher :</strong> {book.publisher}
             </Card.Text>
             <Card.Text>
-              <strong>Description :</strong> {member.description}
+              <strong>Description :</strong> {book.description}
             </Card.Text>
             <Card.Text>
-              <strong>Language :</strong> {member.language}
+              <strong>Language :</strong> {book.language}
             </Card.Text>
             <Card.Text>
-              <strong>Location : </strong> {member.location}
+              <strong>Location : </strong> {book.location}
             </Card.Text>
             <Button variant="primary" onClick={() => navigate('/books')}>
               Back to Book List
