@@ -5,27 +5,74 @@ import BookList from '../organisms/BookList';
 import apiClient from '../../axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import BookService from "../../service/BookService";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import ReactPaginate from "react-paginate";
+import "../styling/paginate.css";
 
-const BookManagemets = () => {
+const fetchBooks = async ({ page, pageSize, sortField, sortOrder }) => {
+  const { data } = await BookService.search({
+    PageNumber: page,
+    PageSize: pageSize,
+    SortBy: sortField,
+    SortOrder: sortOrder,
+  });
+  return data;
+};
+
+const BookPages = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const pageSizes = [3, 6, 9];
 
-  useEffect(() => {
-    // Fetch books from API
-    apiClient.get('/Book')
-      .then((response) => {
-        setBooks(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError("Failed to load books.");
-        setLoading(false);
+  // Fetch books with pagination and sorting
+  const handleFetchBooks = async () => {
+    try {
+      const data = await fetchBooks({
+        page,
+        pageSize,
+        sortField,
+        sortOrder,
       });
-  }, []);
+      setBooks(data.data);
+    } catch (error) {
+      console.error("Failed to fetch books:", error);
+    }
+  };
 
-  if (loading) return <Container>Loading...</Container>;
-  if (error) return <Container>{error}</Container>;
+  const handlePageSizeChange = (e) => {
+    setPageSize(e.target.value);
+    setPage(1); // Reset to the first page when page size changes
+    handleFetchBooks();
+  };
+
+  const handlePageClick = ({ selected }) => {
+    setPage(selected + 1); // React-Paginate uses 0-based index
+    handleFetchBooks();
+  };
+
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+    handleFetchBooks();
+  };
+
+  const getSortIcon = (field) => {
+    if (sortField !== field) return "↕️";
+    return sortOrder === "asc" ? "↑" : "↓";
+  };
+
+  // Fetch books initially when the component mounts
+  React.useEffect(() => {
+    handleFetchBooks();
+  }, [page, pageSize, sortField, sortOrder]);
 
   return (
     <Container>
@@ -38,9 +85,33 @@ const BookManagemets = () => {
       <Link to="/books/add">
         <Button variant="primary" className="mb-3">Add New Book</Button>
       </Link>
-      <BookList books={books} />
+      <BookList books={books} handleSort={handleSort} getSortIcon={getSortIcon} />
+
+      <div className="d-flex align-items-center justify-content-between mt-4">
+        <div>
+          Items per Page:{" "}
+          <select onChange={handlePageSizeChange} value={pageSize}>
+            {pageSizes.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(books.length / pageSize)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        />
+      </div>
     </Container>
   );
 };
 
-export default BookManagemets;
+export default BookPages;

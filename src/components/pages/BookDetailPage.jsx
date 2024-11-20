@@ -12,7 +12,7 @@ const BookDetailPage = () => {
 
   useEffect(() => {
     // Fetch book details based on ISBN or ID from API
-    apiClient.get(`/Book/${id}`)
+    apiClient.get(`/Book/${id}/details`)
       .then((response) => {
         setBook(response.data);
         setLoading(false);
