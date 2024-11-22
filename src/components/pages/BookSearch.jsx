@@ -4,6 +4,7 @@ import BookService from "../../service/BookService";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import "../styling/paginate.css";
+import { Link } from "react-router-dom";
 
 // Function to fetch books based on pagination
 const fetchBooks = async ({ page, pageSize, searchQuery, sortField, sortOrder }) => {
@@ -130,7 +131,9 @@ const BookSearch = () => {
                   <br />
                   <strong>ISBN:</strong> {book.isbn}
                 </Card.Text>
-                <Button variant="primary">View Details</Button>
+                <Link to={`/books/${book.id}`}>
+                    <Button variant="primary">View Details</Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>
